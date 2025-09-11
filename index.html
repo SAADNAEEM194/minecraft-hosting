@@ -12,26 +12,115 @@
     .item-card { background:#1a1a1a; border:1px solid #333; padding:12px; border-radius:10px; }
     .item-title { color:#00ffcc; font-weight:bold; margin-top:10px; }
     .item-btn { display:inline-block; margin-top:8px; background:#00ffcc; color:#111; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:bold; }
-    nav a { color:#00ffcc; text-decoration:none; font-weight:bold; margin-left:15px; }
+
+    /* Admin button */
+    #adminBtn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background:#00ffcc;
+      color:#111;
+      padding:12px 18px;
+      border:none;
+      border-radius:50%;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    /* Popup (Admin & Login) */
+    #popup {
+      display:none;
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:#111;
+      padding:20px;
+      border-radius:10px;
+      border:2px solid #00ffcc;
+      width:300px;
+      z-index:1000;
+    }
+    #popup input, #popup button {
+      width:100%;
+      margin:5px 0;
+      padding:8px;
+      border-radius:6px;
+      border:none;
+    }
+    #popup button {
+      background:#00ffcc;
+      color:#111;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    /* Overlay */
+    #overlay {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.7);
+      z-index:999;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>HackerMC Store</h1>
-    <nav>
-      <a href="admin.html">Admin Login</a>
-    </nav>
   </header>
 
   <!-- Store Items -->
   <section class="store-container" id="store"></section>
 
+  <!-- Admin Button -->
+  <button id="adminBtn">⚙</button>
+
+  <!-- Overlay -->
+  <div id="overlay"></div>
+
+  <!-- Popup (Login or Admin Panel) -->
+  <div id="popup">
+    <!-- Login Form -->
+    <div id="loginForm">
+      <h2>Admin Login</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <button onclick="closePopup()">Close</button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" style="display:none;">
+      <h2>Add Item</h2>
+      <input type="text" id="title" placeholder="Title">
+      <input type="text" id="price" placeholder="Price (Free or $)">
+      <input type="text" id="image" placeholder="Image URL">
+      <input type="text" id="link" placeholder="Download/Buy link">
+      <button onclick="addItem()">Add Item</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
   <script>
-    let items = [
-      
-      { title:"Test", price:"Free", image:"https://wallpapers.com/images/featured/minecraft-s2kxfahyg30sob8q.jpg", link:"https://www.mediafire.com/file/kwhtr0d1fkpqyvz/HYRONIC_SURVIVAL.zip/file"},
+    // --- Admin credentials (change these) ---
+    const ADMIN_USER = "admin";
+    const ADMIN_PASS = "12345";
+
+    // Store items (default or saved)
+    let items = JSON.parse(localStorage.getItem("storeItems")) || [
+      { title:"Voting GUI Config", price:"Free", image:"https://i.imgur.com/xW0V5Zf.png", link:"#"},
+      { title:"Server Shop Menu", price:"$5.00", image:"https://i.imgur.com/4N2PnQ1.png", link:"#"},
+      { title:"Discord GUI Config", price:"Free", image:"https://i.imgur.com/7qEmZkQ.png", link:"#"}
     ];
 
+    // Save items
+    function saveItems(){
+      localStorage.setItem("storeItems", JSON.stringify(items));
+    }
+
+    // Load items
     function loadItems(){
       let container = document.getElementById("store");
       container.innerHTML = "";
@@ -45,8 +134,73 @@
           </div>`;
       });
     }
+
+    // Add item
+    function addItem(){
+      let title = document.getElementById("title").value;
+      let price = document.getElementById("price").value;
+      let image = document.getElementById("image").value;
+      let link = document.getElementById("link").value;
+
+      if(title && price && image && link){
+        items.push({title,price,image,link});
+        saveItems();
+        loadItems();
+        closePopup();
+      } else {
+        alert("⚠️ Please fill all fields!");
+      }
+    }
+
+    // Open popup (admin button)
+    document.getElementById("adminBtn").onclick = ()=>{
+      document.getElementById("overlay").style.display="block";
+      document.getElementById("popup").style.display="block";
+      if(localStorage.getItem("isAdmin")==="true"){
+        showAdminPanel();
+      } else {
+        showLogin();
+      }
+    };
+
+    // Close popup
+    function closePopup(){
+      document.getElementById("overlay").style.display="none";
+      document.getElementById("popup").style.display="none";
+    }
+
+    // Show login panel
+    function showLogin(){
+      document.getElementById("loginForm").style.display="block";
+      document.getElementById("adminPanel").style.display="none";
+    }
+
+    // Show admin panel
+    function showAdminPanel(){
+      document.getElementById("loginForm").style.display="none";
+      document.getElementById("adminPanel").style.display="block";
+    }
+
+    // Login
+    function login(){
+      let user = document.getElementById("username").value;
+      let pass = document.getElementById("password").value;
+      if(user===ADMIN_USER && pass===ADMIN_PASS){
+        localStorage.setItem("isAdmin","true");
+        showAdminPanel();
+      } else {
+        alert("❌ Wrong username or password!");
+      }
+    }
+
+    // Logout
+    function logout(){
+      localStorage.removeItem("isAdmin");
+      closePopup();
+    }
+
+    // Initial load
     loadItems();
   </script>
 </body>
 </html>
-
