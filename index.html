@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GonCloud — Minecraft Server Hosting</title>
+  <style>
+    /* Reset & base */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      background:#000;
+      color:#e6f7ff;
+      font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+    }
+    a{color:inherit;text-decoration:none}
+
+    /* Container */
+    .container{width:92%;max-width:1100px;margin:0 auto}
+
+    /* Header / Navbar */
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:46px;height:46px;border-radius:10px;
+      background:linear-gradient(135deg,#7cf9ff,#7cffb2);
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:#012;
+      box-shadow:0 10px 30px rgba(124,249,255,0.06)
+    }
+    nav ul{display:flex;gap:16px;list-style:none;align-items:center}
+    .cta{padding:8px 14px;border-radius:8px;font-weight:700;background:linear-gradient(90deg,#4d94ff,#8b6bff);color:#fff}
+
+    /* HERO */
+    .hero{min-height:86vh;display:flex;align-items:center;padding:60px 0}
+    .hero-inner{display:flex;gap:36px;align-items:center;flex-wrap:wrap}
+    .hero-left{flex:1 1 480px}
+    .hero-right{flex:1 1 360px;display:flex;justify-content:center}
+    .eyebrow{color:#7bdcff;font-weight:700;letter-spacing:1px;margin-bottom:10px}
+    h1{
+      font-size:clamp(30px,5vw,48px);
+      background:linear-gradient(90deg,#fff,#d3f7ff 40%,#bdeebd 70%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;
+    }
+    .neon{color:#fff;font-weight:700;text-shadow:0 0 8px rgba(124,249,255,0.8);animation:neonPulse 2.6s ease-in-out infinite}
+    @keyframes neonPulse{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-4px);text-shadow:0 0 22px rgba(124,249,255,0.16)}
+      100%{transform:translateY(0)}
+    }
+    .hero-p{color:#cfd8dc;margin:14px 0 24px;max-width:62ch}
+
+    /* Server status card */
+    .status-card{
+      width:340px;padding:18px;border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 60px rgba(0,0,0,0.6);
+    }
+    .server-ip{font-family:monospace;font-weight:800;font-size:20px;margin-top:8px;color:#cfeffd}
+    .status-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .dot.online{background:#2ee39a;box-shadow:0 0 12px rgba(46,227,154,0.14)}
+    .dot.offline{background:#ff4d4d;box-shadow:0 0 12px rgba(255,77,77,0.12)}
+    .players{font-size:14px;color:#bfe9f0}
+
+    /* Plans */
+    .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:40px 0}
+    .plan{
+      padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      transition:transform .18s ease,box-shadow .18s ease;
+    }
+    .plan:hover{transform:translateY(-8px);box-shadow:0 30px 70px rgba(77,148,255,0.05)}
+    .plan .price{font-size:26px;font-weight:800;margin:10px 0;color:#dffcff}
+    .plan ul{margin:10px 0 16px;padding-left:18px;color:#cfeffd}
+    .buy{display:inline-block;padding:10px 14px;border-radius:8px;background:#00e5c1;color:#002022;font-weight:800;cursor:pointer}
+
+    /* Features */
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:20px 0}
+    .feature{padding:16px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03)}
+
+    /* FAQ */
+    .faq{margin:24px 0}
+    .q{background:#0e1113;padding:12px;border-radius:10px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.02)}
+    .q summary{cursor:pointer;font-weight:700}
+    .q p{margin-top:8px;color:#bfcbd6}
+
+    /* Contact */
+    .contact{padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.03);margin:32px 0;display:flex;gap:18px;flex-wrap:wrap}
+    .contact .left{flex:1 1 280px}
+    .contact .right{flex:1 1 320px}
+    .input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:#eaf8ff;outline:none}
+    .input:focus,textarea:focus{box-shadow:0 10px 30px rgba(77,148,255,0.06);border-color:rgba(77,148,255,0.6)}
+
+    /* Footer */
+    footer{padding:22px 0;color:#9fb0bd;border-top:1px solid rgba(255,255,255,0.02);margin-top:30px}
+
+    /* Small screens */
+    @media(max-width:760px){
+      nav ul{display:none}
+      .hero-inner{flex-direction:column-reverse;align-items:center}
+      .status-card{width:92%}
+    }
+
+    /* Tiny animated background grid (subtle) */
+    .grid-bg{
+      position:fixed;inset:0;z-index:0;opacity:0.03;pointer-events:none;
+      background-image:linear-gradient(#00ffff 1px, transparent 1px),linear-gradient(90deg,#00ffff 1px, transparent 1px);
+      background-size:80px 80px,80px 80px;
+      transform:translateZ(0)
+    }
+    /* helper */
+    .muted{color:#9fb0bd}
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">GC</div>
+        <div>
+          <div style="font-weight:800">GonCloud</div>
+          <div style="font-size:12px;color:#9fb0bd">Premium Minecraft Hosting</div>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="#home" class="muted">Home</a></li>
+          <li><a href="#plans" class="muted">Plans</a></li>
+          <li><a href="#features" class="muted">Features</a></li>
+          <li><a href="#contact" class="muted">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div><a class="cta" href="#plans">Get Started</a></div>
+    </div>
+  </header>
+
+  <main class="container" id="home">
+    <!-- HERO -->
+    <section class="hero" aria-label="hero">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="eyebrow">LAUNCH NOW</div>
+          <h1>World-class <span class="neon">Minecraft</span> hosting — fast, stable, secure.</h1>
+          <p class="hero-p">Spin up your server in seconds with 99.99% uptime, automatic backups, DDoS protection, and easy one-click modpack installs. Perfect for friends, communities, and public networks.</p>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <a class="cta" href="#plans">View Plans</a>
+            <a class="buy" href="#contact" style="background:#4d94ff;color:#fff">Custom Quote</a>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="status-card" role="status" aria-live="polite">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:14px;color:#9fb0bd">Server Status</div>
+                <div class="server-ip">play.gonmc.net</div>
+              </div>
+              <div style="text-align:right">
+                <div class="dot online" id="liveDot" title="Online"></div>
+                <div style="font-size:12px;color:#9fb0bd;margin-top:6px" id="uptimeText">Uptime: 99.99%</div>
+              </div>
+            </div>
+
+            <div class="status-row" style="margin-top:16px">
+              <div>
+                <div class="muted">Version</div>
+                <div style="font-weight:800;margin-top:4px">1.20.4</div>
+              </div>
+              <div style="text-align:right">
+                <div class="muted">Players</div>
+                <div class="players" id="playersCount">12 / 120</div>
+              </div>
+            </div>
+
+            <div style="margin-top:14px">
+              <div class="muted" style="font-size:13px">Auto-backups: <strong>Hourly</strong></div>
+              <div class="muted" style="font-size:13px;margin-top:6px">DDoS Protection: <strong>Enabled</strong></div>
+            </div>
+
+            <div style="margin-top:14px;display:flex;gap:8px">
+              <button class="buy" onclick="joinServer()">Join Server</button>
+              <button class="buy" style="background:#ffbb6b" onclick="copyIP()">Copy IP</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANS -->
+    <section id="plans">
+      <h2 style="text-align:center;color:#00e5c1;margin-bottom:18px">Hosting Plans</h2>
+      <div class="plans" aria-label="plans">
+        <div class="plan">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>Starter</strong><div class="muted" style="font-size:13px">For small friends-group</div></div>
+            <div style="font-size:12px;color:#9fb0bd">1 vCPU • 2GB RAM</div>
+          </div>
+          <div class="price">₹149 / mo</div>
+          <ul>
+            <li>Up to 8 players</li>
+            <li>1GB SSD storage</li>
+            <li>1 Snapshot & Daily Backup</li>
+            <li>1-click modpacks</li>
+          </ul>
+          <a class="buy" href="#contact" onclick="selectPlan('Starter',149)">Buy Now</a>
+        </div>
+
+        <div class="plan" style="border:2px solid rgba(77,148,255,0.12)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>Pro</strong><div class="muted" style="font-size:13px">Most popular</div></div>
+            <div style="font-size:12px;color:#9fb0bd">2 vCPU • 4GB RAM</div>
+          </div>
+          <div class="price">₹349 / mo</div>
+          <ul>
+            <li>Up to 40 players</li>
+            <li>10GB NVMe storage</li>
+            <li>Hourly backups</li>
+            <li>Priority support</li>
+          </ul>
+          <a class="buy" href="#contact" onclick="selectPlan('Pro',349)">Buy Now</a>
+        </div>
+
+        <div class="plan">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>Enterprise</strong><div class="muted" style="font-size:13px">Public networks & large communities</div></div>
+            <div style="font-size:12px;color:#9fb0bd">4 vCPU • 12GB RAM</div>
+          </div>
+          <div class="price">Custom</div>
+          <ul>
+            <li>Unlimited slots (configurable)</li>
+            <li>Dedicated NVMe storage</li>
+            <li>Custom DDoS rules</li>
+            <li>Managed migration</li>
+          </ul>
+          <a class="buy" href="#contact" onclick="selectPlan('Enterprise',0)">Get Quote</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <h2 style="text-align:center;color:#00e5c1;margin-bottom:18px">Why BlockHost?</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>One-click Modpacks</h3>
+          <p class="muted">Install popular modpacks (FTB, Sponge, Forge, Fabric, Paper) with a single click.</p>
+        </div>
+        <div class="feature">
+          <h3>99.99% Uptime</h3>
+          <p class="muted">High-availability network and automatic failover so your server stays online.</p>
+        </div>
+        <div class="feature">
+          <h3>Automatic Backups</h3>
+          <p class="muted">Hourly or daily snapshots you can restore in seconds.</p>
+        </div>
+        <div class="feature">
+          <h3>DDoS Protection</h3>
+          <p class="muted">Enterprise-grade network protection included with every plan.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+      <h2 style="text-align:center;color:#00e5c1;margin-bottom:12px">FAQ</h2>
+
+      <details class="q">
+        <summary>How do I join the server?</summary>
+        <p>Open Minecraft, click Multiplayer -> Add Server, and use the IP <strong>play.blockhost.example</strong>. Or click Join Server on this page (opens copy dialog).</p>
+      </details>
+
+      <details class="q">
+        <summary>Can I install custom plugins/mods?</summary>
+        <p>Yes — our control panel supports plugin and mod uploads plus one-click installers for many modpacks.</p>
+      </details>
+
+      <details class="q">
+        <summary>Do you offer refunds?</summary>
+        <p>We offer a 7-day money-back guarantee on monthly plans. Contact support for refund requests.</p>
+      </details>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact" aria-label="contact form">
+      <div class="left">
+        <h3>Get Started</h3>
+        <p class="muted">Tell us about your server — name, expected players, preferred plan. We'll get back within 12 hours.</p>
+
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+          <div style="margin-top:12px;">
+            <input class="input" id="name" type="text" placeholder="Your name" required />
+          </div>
+          <div style="margin-top:12px;">
+            <input class="input" id="email" type="email" placeholder="Your email" required />
+          </div>
+          <div style="margin-top:12px;">
+            <input class="input" id="mcip" type="text" placeholder="Server IP (optional)" />
+          </div>
+          <div style="margin-top:12px;">
+            <textarea class="input" id="message" rows="5" placeholder="Tell us about your server" required></textarea>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="buy" type="submit">Send Request</button>
+            <button type="button" onclick="presetDemo()" class="buy" style="background:#8b6bff;color:#fff">Request Demo</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="right">
+        <h4>Office</h4>
+        <p class="muted">Karachi, Pakistan</p>
+        <p style="margin-top:12px" class="muted">Email: sales@blockhost.example</p>
+        <p class="muted" style="margin-top:8px">Phone: +92 300 0000000</p>
+
+        <div style="margin-top:18px;padding:12px;border-radius:10px;background:#071018;border:1px solid rgba(255,255,255,0.02)">
+          <div style="font-size:13px;color:#9fb0bd">Control Panel</div>
+          <div style="margin-top:8px;color:#cfeffd">Manage servers, backups, players and modpacks from an easy dashboard.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div class="muted">© <strong>BlockHost</strong> — Minecraft Hosting</div>
+        <div class="muted">Made for demo • Save as <code>index.html</code></div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    /* ---- Fake live status & helpers (front-end only) ---- */
+    function randomPlayers(){
+      // simple random players display (for demo)
+      const max = 120;
+      const cur = Math.floor(Math.random()*60) + 2;
+      document.getElementById('playersCount').innerText = cur + ' / ' + max;
+    }
+    function toggleStatus(online){
+      const dot = document.getElementById('liveDot');
+      const txt = document.getElementById('uptimeText');
+      if(online){
+        dot.classList.remove('offline'); dot.classList.add('online');
+        txt.innerText = 'Uptime: 99.99%';
+      } else {
+        dot.classList.remove('online'); dot.classList.add('offline');
+        txt.innerText = 'Uptime: degraded';
+      }
+    }
+    // demo periodic updates
+    setInterval(randomPlayers, 2500);
+    setInterval(()=> { toggleStatus(Math.random()>0.05); }, 5000);
+
+    function copyIP(){
+      const ip = 'play.blockhost.example';
+      navigator.clipboard?.writeText(ip).then(()=> {
+        alert('Server IP copied: ' + ip);
+      }).catch(()=> {
+        prompt('Copy this IP:', ip);
+      })
+    }
+    function joinServer(){
+      copyIP();
+      alert('Open Minecraft → Multiplayer → Add Server → Paste IP and join.');
+    }
+
+    /* Plan selection & contact */
+    function selectPlan(name, price){
+      const msg = 'I want the ' + name + (price?(' plan for ₹'+price+'/mo'):' (custom quote)');
+      document.getElementById('message').value = msg;
+      window.location.hash = '#contact';
+      document.getElementById('name').focus();
+    }
+
+    function presetDemo(){
+      document.getElementById('name').value = 'Demo User';
+      document.getElementById('email').value = 'demo@example.com';
+      document.getElementById('message').value = 'Please set up a demo server for testing. CPU: 2, RAM: 4GB, Slots: 10.';
+      window.location.hash = '#contact';
+    }
+
+    /* Contact form handler (no backend) */
+    function handleSubmit(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const msg = document.getElementById('message').value.trim();
+      if(!name || !email || !msg){
+        alert('Please fill all required fields.');
+        return;
+      }
+      // For demo: show a success message and reset selected fields
+      alert('Thanks, ' + name + '! Your request has been sent. We will contact you at ' + email + '.');
+      e.target.reset();
+    }
+  </script>
+</body>
+</html>
